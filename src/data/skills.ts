@@ -5,39 +5,47 @@ export interface SkillCategory {
 
 export const skillsData: SkillCategory[] = [
   {
-    title: 'Programming',
-    skills: ['Python', 'JavaScript', 'PHP'],
-  },
-  {
     title: 'Web Development',
     skills: [
-      'HTML5',
-      'CSS3',
-      'JavaScript',
-      'TypeScript',
-      'Bootstrap',
-      'Tailwind CSS',
       'React.js',
       'Node.js',
       'Express.js',
+      'TypeScript',
+      'JavaScript',
+      'HTML5',
+      'CSS3',
+      'Tailwind CSS',
+      'Bootstrap',
       'PHP',
-      'MySQL',
-      'MongoDB',
-      'REST API',
     ],
   },
   {
-    title: 'Machine Learning & Computer Vision',
+    title: 'Enterprise Systems',
+    skills: [
+      'MySQL',
+      'MongoDB',
+      'REST API',
+      'System Architecture',
+    ],
+  },
+  {
+    title: 'AI',
     skills: [
       'Machine Learning',
       'Deep Learning',
-      'Computer Vision',
-      'OpenCV',
       'TensorFlow',
       'PyTorch',
       'Scikit-learn',
       'NumPy',
       'Pandas',
+      'Model Training',
+      'Model Evaluation',
+    ],
+  },
+  {
+    title: 'Computer Vision',
+    skills: [
+      'OpenCV',
       'YOLO',
       'Mask R-CNN',
       'Cascade R-CNN',
@@ -46,9 +54,24 @@ export const skillsData: SkillCategory[] = [
       'Object Detection',
       'Instance Segmentation',
       'Medical Image Analysis',
+    ],
+  },
+  {
+    title: 'Dev Tools',
+    skills: [
+      'Git',
+      'GitHub',
+      'VS Code',
+      'Jupyter',
       'Dataset Annotation',
-      'Model Training',
-      'Model Evaluation',
+    ],
+  },
+  {
+    title: 'Networking',
+    skills: [
+      'TCP/IP',
+      'HTTP/HTTPS',
+      'API Design',
     ],
   },
 ];

@@ -4,8 +4,11 @@ export interface ResearchItem {
   conference: string;
   year: string;
   status: string;
-  link?: string;
-  abstract: string;
+  dataset?: string;
+  models?: string[];
+  summary: string;
+  paperLink?: string;
+  codeLink?: string;
   authors?: string;
 }
 
@@ -17,9 +20,9 @@ export const research: ResearchItem[] = [
     conference: 'IEEE SERA Conference',
     year: '2025',
     status: 'Published',
-    link: 'https://doi.org/10.1109/SERA65747.2025.11154536',
-    abstract:
-      'Empirically demonstrated significant learning gains in a N=100 study.',
+    paperLink: 'https://doi.org/10.1109/SERA65747.2025.11154536',
+    summary:
+      'Empirically demonstrated significant learning gains in a N=100 study focusing on project-based learning methodologies.',
   },
   {
     id: '2',
@@ -27,8 +30,10 @@ export const research: ResearchItem[] = [
     conference: 'Group Research Project',
     year: '2026',
     status: 'Completed (Unpublished)',
-    abstract:
-      'Developed a deep learning-based approach using Mask R-CNN, Cascade R-CNN, and YOLO11m for automated third molar segmentation and classification. Utilizing a specialized dataset of 20,000 dental images collected from the Middle East to ensure model robustness and diversity. Supervised by: MM Mahbubul Syeed, PhD, Professor, Dept. of CSE, IUB.',
+    dataset: '20,000 panoramic dental radiographs (Middle East)',
+    models: ['Mask R-CNN', 'Cascade R-CNN', 'YOLO11m'],
+    summary:
+      'Developed a robust deep learning-based approach for automated third molar segmentation and classification. Supervised by MM Mahbubul Syeed, PhD.',
     authors:
       'Safiqul Islam, Zahidul Hasan Bhuiyan, Md. Ashrafuzzaman, Mohammad Khursheed Alam',
   },

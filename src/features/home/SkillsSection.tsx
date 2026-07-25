@@ -4,54 +4,66 @@ import { SectionContainer } from '@/components/layout/SectionContainer';
 import { MaxWidthWrapper } from '@/components/layout/MaxWidthWrapper';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { Badge } from '@/components/ui/badge';
-import { skillsData } from '@/data/skills';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card';
+import { useSkills } from '@/hooks/usePortfolio';
 
 export function SkillsSection() {
+  const { data: skillsData = [] } = useSkills();
+
+  if (!skillsData || skillsData.length === 0) {
+    return null; // Gracefully omit section if database has zero skills
+  }
+
   return (
-    <SectionContainer id="skills" className="bg-background">
+    <SectionContainer id="skills" className="bg-muted/30">
       <MaxWidthWrapper>
         <SectionHeading
-          title="Technical Arsenal"
-          subtitle="Tools and technologies I use to build scalable systems."
+          title="Technical Expertise"
+          subtitle="Engineering domains and specialized tools I leverage to build robust solutions."
         />
 
-        <div className="max-w-4xl mx-auto mt-16 md:mt-24 flex flex-col gap-16 md:gap-24">
+        <motion.div 
+          className="max-w-6xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+        >
           {skillsData.map((category) => (
             <motion.div
               key={category.title}
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
-              className="flex flex-col"
+              variants={slideUpStagger}
+              className="h-full"
             >
-              <motion.h3
-                variants={slideUpStagger}
-                className="text-2xl md:text-3xl font-medium tracking-tight text-foreground/90"
-              >
-                {category.title}
-              </motion.h3>
+              <Card className="h-full bg-card/40 backdrop-blur-sm border-border/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl font-heading text-foreground group-hover:text-primary transition-colors">
+                    {category.title}
+                  </CardTitle>
+                </CardHeader>
 
-              <motion.div
-                variants={slideUpStagger}
-                className="h-px w-full bg-border/40 mt-4 mb-8"
-              />
-
-              <div className="flex flex-wrap gap-3 md:gap-4">
-                {category.skills.map((skill) => (
-                  <motion.div key={skill} variants={slideUpStagger}>
-                    <Badge
-                      variant="outline"
-                      className="px-4 py-2 md:px-5 md:py-2.5 rounded-full border-border/30 bg-muted/20 hover:bg-muted/50 hover:border-border/50 transition-all duration-300 font-medium text-[13px] md:text-[15px] text-foreground/70 hover:text-foreground/90 shadow-none backdrop-blur-md"
-                    >
-                      {skill}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </div>
+                <CardContent className="mt-auto">
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill) => (
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="bg-background/80 hover:bg-primary hover:text-primary-foreground transition-all duration-200 border border-border/50"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </MaxWidthWrapper>
     </SectionContainer>
   );

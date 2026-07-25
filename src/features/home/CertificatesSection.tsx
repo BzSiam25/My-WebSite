@@ -4,10 +4,16 @@ import { SectionContainer } from '@/components/layout/SectionContainer';
 import { MaxWidthWrapper } from '@/components/layout/MaxWidthWrapper';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { certificates } from '@/data/certificates';
 import { Award, ExternalLink } from 'lucide-react';
+import { useCertificates } from '@/hooks/usePortfolio';
 
 export function CertificatesSection() {
+  const { data: certList = [] } = useCertificates();
+
+  if (!certList || certList.length === 0) {
+    return null; // Gracefully omit section if database has zero certificates
+  }
+
   return (
     <SectionContainer id="certificates" className="bg-muted/30">
       <MaxWidthWrapper>
@@ -23,9 +29,9 @@ export function CertificatesSection() {
           viewport={{ once: true, margin: '-100px' }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {certificates.map((cert) => (
+          {certList.map((cert: any) => (
             <motion.div
-              key={cert.id}
+              key={cert.id || cert.title}
               variants={slideUpStagger}
               className="h-full"
             >
@@ -38,23 +44,26 @@ export function CertificatesSection() {
                     <a
                       href={cert.link}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                      rel="noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors p-1"
+                      aria-label={`View certificate for ${cert.title}`}
                     >
-                      <ExternalLink className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
+                      <ExternalLink className="h-4 w-4" />
                     </a>
                   )}
                 </CardHeader>
-                <CardContent className="flex flex-col gap-1.5 pt-1">
-                  <CardTitle className="font-heading text-lg leading-tight mb-1">
+                <CardContent className="space-y-2">
+                  <CardTitle className="text-base font-heading group-hover:text-primary transition-colors">
                     {cert.title}
                   </CardTitle>
-                  <p className="text-sm font-semibold text-foreground/80">
+                  <p className="text-sm font-medium text-foreground/80">
                     {cert.issuer}
                   </p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-                    {cert.date}
-                  </p>
+                  {cert.date && (
+                    <p className="text-xs text-muted-foreground pt-1">
+                      Issued: {cert.date}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>

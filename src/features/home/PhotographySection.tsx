@@ -3,10 +3,12 @@ import { slideUpStagger, staggerContainer } from '@/lib/motion';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { MaxWidthWrapper } from '@/components/layout/MaxWidthWrapper';
 import { SectionHeading } from '@/components/shared/SectionHeading';
-import { photos } from '@/data/photography';
+import { photos as fallbackData } from '@/data/photography';
 import { MapPin } from 'lucide-react';
+import { usePhotography } from '@/hooks/usePortfolio';
 
 export function PhotographySection() {
+  const { data: photos = fallbackData } = usePhotography();
   return (
     <SectionContainer id="photography" className="bg-muted/30">
       <MaxWidthWrapper>
@@ -22,7 +24,7 @@ export function PhotographySection() {
           viewport={{ once: true, margin: '-100px' }}
           className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
         >
-          {photos.map((photo) => (
+          {photos.map((photo: any) => (
             <motion.div
               key={photo.id}
               variants={slideUpStagger}

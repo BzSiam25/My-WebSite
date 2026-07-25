@@ -38,34 +38,56 @@ export function AIAssistant() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async (customText?: string) => {
+    const textToSend = customText || input;
+    if (!textToSend.trim()) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: textToSend,
     };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      let reply = mockResponses.default;
-      const lower = userMsg.content.toLowerCase();
-      if (lower.includes('experience') || lower.includes('work'))
-        reply = mockResponses.experience;
-      if (lower.includes('skill') || lower.includes('tech'))
-        reply = mockResponses.skills;
-      if (lower.includes('contact') || lower.includes('email'))
-        reply = mockResponses.contact;
+    try {
+      const history = messages
+        .filter(m => m.id !== '1')
+        .map(m => ({
+          role: m.role === 'user' ? 'user' : 'model',
+          content: m.content
+        }));
 
+      const apiBase = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+      const response = await fetch(`${apiBase}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: userMsg.content,
+          history
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API Error');
+      }
+
+      const resData = await response.json();
       setMessages((prev) => [
         ...prev,
-        { id: Date.now().toString(), role: 'assistant', content: reply },
+        { id: Date.now().toString(), role: 'assistant', content: resData.reply },
       ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), role: 'assistant', content: "Sorry, I am having trouble connecting to Siam's server right now. Please try again later." },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const copyToClipboard = (text: string, id: string) => {
@@ -213,7 +235,7 @@ export function AIAssistant() {
                   className="flex-1 h-10 bg-background border border-border rounded-full px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 <Button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={!input.trim() || isTyping}
                   className="h-10 w-10 rounded-full shrink-0"
                   size="icon"
@@ -226,8 +248,7 @@ export function AIAssistant() {
                   <button
                     key={suggestion}
                     onClick={() => {
-                      setInput(suggestion);
-                      handleSend();
+                      handleSend(suggestion);
                     }}
                     className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-border/50 bg-secondary/50 hover:bg-secondary transition-colors whitespace-nowrap font-medium"
                   >

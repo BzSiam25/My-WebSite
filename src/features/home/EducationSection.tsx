@@ -4,10 +4,16 @@ import { SectionContainer } from '@/components/layout/SectionContainer';
 import { MaxWidthWrapper } from '@/components/layout/MaxWidthWrapper';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { GlassCard } from '@/components/shared/GlassCard';
-import { educationData } from '@/data/education';
 import { GraduationCap } from 'lucide-react';
+import { useEducation } from '@/hooks/usePortfolio';
 
 export function EducationSection() {
+  const { data: educationList = [] } = useEducation();
+
+  if (!educationList || educationList.length === 0) {
+    return null; // Gracefully omit section if database has zero education records
+  }
+
   return (
     <SectionContainer id="education" className="bg-muted/30">
       <MaxWidthWrapper>
@@ -23,9 +29,9 @@ export function EducationSection() {
           viewport={{ once: true, margin: '-100px' }}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {educationData.map((edu) => (
+          {educationList.map((edu: any) => (
             <motion.div
-              key={edu.id}
+              key={edu.id || edu.degree}
               variants={slideUpStagger}
               className="h-full"
             >
@@ -34,33 +40,30 @@ export function EducationSection() {
                   <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
                     <GraduationCap className="h-5 w-5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
-                    {edu.duration}
-                  </span>
+                  {edu.duration && (
+                    <span className="text-sm font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
+                      {edu.duration}
+                    </span>
+                  )}
                 </div>
 
-                <div className="mt-2">
-                  <h3 className="font-heading font-bold text-xl leading-tight">
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-foreground mb-1">
                     {edu.degree}
                   </h3>
-                  <p className="text-primary font-medium mt-1.5">
-                    {edu.institution}
-                  </p>
+                  <p className="text-sm text-primary font-medium">{edu.institution}</p>
                 </div>
 
                 {edu.description && (
-                  <p className="text-muted-foreground text-sm mt-2 flex-grow leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {edu.description}
                   </p>
                 )}
 
                 {edu.gpa && (
-                  <div className="mt-5 pt-4 border-t border-border/50 flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
-                      GPA
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {edu.gpa}
+                  <div className="mt-auto pt-4 border-t border-border/30">
+                    <span className="text-xs text-muted-foreground">
+                      CGPA: <strong className="text-foreground">{edu.gpa}</strong>
                     </span>
                   </div>
                 )}

@@ -8,16 +8,15 @@ import { ScrollProgress } from '@/components/shared/ScrollProgress';
 import { BackToTop } from '@/components/shared/BackToTop';
 import { HeroSection } from '@/features/home/HeroSection';
 import { AboutSection } from '@/features/home/AboutSection';
+import { CurrentFocusSection } from '@/features/home/CurrentFocusSection';
+import { ProjectsSection } from '@/features/home/ProjectsSection';
 import { ExperienceSection } from '@/features/home/ExperienceSection';
 import { SkillsSection } from '@/features/home/SkillsSection';
-import { EducationSection } from '@/features/home/EducationSection';
-
 import { ResearchSection } from '@/features/home/ResearchSection';
-import { CertificatesSection } from '@/features/home/CertificatesSection';
-import { ProjectsSection } from '@/features/home/ProjectsSection';
+import { GithubSection } from '@/features/github/GithubSection';
 import { PhotographySection } from '@/features/home/PhotographySection';
-import { ResumeSection } from '@/features/home/ResumeSection';
-import { ContactSection } from '@/features/home/ContactSection';
+import { AdminPanel } from '@/features/admin/AdminPanel';
+import { ContactPage } from '@/features/contact/ContactPage';
 
 // Lazy loaded components for code splitting & performance
 const AIAssistant = lazy(() =>
@@ -31,15 +30,11 @@ function Home() {
       <ScrollProgress />
       <HeroSection />
       <AboutSection />
-      <ExperienceSection />
-      <SkillsSection />
-      <EducationSection />
+      <CurrentFocusSection />
 
-      <ResearchSection />
-      <CertificatesSection />
-      <ProjectsSection />
-      <ResumeSection />
-      <ContactSection />
+      <SkillsSection />
+      <GithubSection />
+      <PhotographySection />
 
       <BackToTop />
       <Suspense fallback={null}>
@@ -56,6 +51,45 @@ function PhotographyPage() {
       <ScrollProgress />
       <div className="pt-20">
         <PhotographySection />
+      </div>
+      <BackToTop />
+    </>
+  );
+}
+
+function JourneyPage() {
+  return (
+    <>
+      <SEO title="Journey | Md. Bayezid Hasan Siam" />
+      <ScrollProgress />
+      <div className="pt-20">
+        <ExperienceSection />
+      </div>
+      <BackToTop />
+    </>
+  );
+}
+
+function FeaturedWorkPage() {
+  return (
+    <>
+      <SEO title="Featured Work | Md. Bayezid Hasan Siam" />
+      <ScrollProgress />
+      <div className="pt-20">
+        <ProjectsSection />
+      </div>
+      <BackToTop />
+    </>
+  );
+}
+
+function ResearchPage() {
+  return (
+    <>
+      <SEO title="Research | Md. Bayezid Hasan Siam" />
+      <ScrollProgress />
+      <div className="pt-20">
+        <ResearchSection />
       </div>
       <BackToTop />
     </>
@@ -104,6 +138,42 @@ function App() {
                   <PhotographyPage />
                 </MainLayout>
               }
+            />
+            <Route
+              path="/journey"
+              element={
+                <MainLayout>
+                  <JourneyPage />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/research"
+              element={
+                <MainLayout>
+                  <ResearchPage />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/featured-work"
+              element={
+                <MainLayout>
+                  <FeaturedWorkPage />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <MainLayout>
+                  <ContactPage />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/admin"
+              element={<AdminPanel />}
             />
           </Routes>
         </ErrorBoundary>

@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { staggerContainer, slideUpStagger } from '@/lib/motion';
 import { MaxWidthWrapper } from '@/components/layout/MaxWidthWrapper';
-import { siteConfig } from '@/data/config';
+import { siteConfig as fallbackConfig } from '@/data/config';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import { useHero } from '@/hooks/usePortfolio';
+import { Link } from 'react-router-dom';
 
 const Github = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3-.3 6-1.5 6-6.5a5.4 5.4 0 0 0-1.5-3.8 5.3 5.3 0 0 0-.1-3.8s-1.2-.4-3.9 1.4a13.3 13.3 0 0 0-7 0C6.2 1.6 5 2 5 2a5.3 5.3 0 0 0-.1 3.8A5.4 5.4 0 0 0 3 9.5c0 5 3 6.2 6 6.5a4.8 4.8 0 0 0-1 3.2v4"></path></svg>
@@ -31,9 +33,18 @@ const SocialIcon = ({ name }: { name: string }) => {
 };
 
 export function HeroSection() {
+  const { data: heroData } = useHero();
+
+  const displayName = heroData?.name || 'Md. Bayezid Hasan Siam';
+  const subtitle = heroData?.subtitle || 'Software Engineer | AI & Computer Vision Researcher | Open Source Learner';
+  const socials = heroData?.social_links || fallbackConfig.socials;
+  const ctaButtons = heroData?.cta_buttons || [
+    { label: 'View Work', link: '/#projects' },
+    { label: 'Contact Me', link: '/contact' }
+  ];
+
   return (
     <section className="relative flex min-h-[100dvh] w-full flex-col items-center justify-end lg:justify-center overflow-hidden bg-background pt-24 lg:pt-0">
-      {/* Premium Background Depth */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.2),rgba(255,255,255,0))]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[1000px] h-[400px] sm:h-[600px] bg-primary/10 blur-[100px] rounded-full pointer-events-none opacity-60 dark:opacity-30" />
 
@@ -44,61 +55,64 @@ export function HeroSection() {
           animate="visible"
           className="flex flex-col lg:flex-row items-center justify-between w-full h-full gap-8 lg:gap-12"
         >
-          {/* Left Side: Text Content */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 lg:gap-8 lg:w-[55%] order-2 lg:order-1 pb-16 lg:pb-0 z-10">
-            
-
-            {/* Main Headline */}
             <motion.h1
               variants={slideUpStagger}
               className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5rem] font-extrabold tracking-tighter font-heading text-foreground leading-[1.05]"
             >
-              Md. Bayezid <br className="hidden xl:block" />
+              {displayName.split(' ').slice(0, -1).join(' ')} <br className="hidden xl:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/90 to-muted-foreground/50">
-                Hasan Siam
+                {displayName.split(' ').slice(-1).join('')}
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
             <motion.p
               variants={slideUpStagger}
               className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed flex flex-col gap-1"
             >
-              <span>Software Engineer</span>
-              <span>AI & Computer Vision Researcher</span>
-              <span>Open Source Learner</span>
+              {subtitle.split('|').map((s: string, idx: number) => (
+                <span key={idx}>{s.trim()}</span>
+              ))}
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               variants={slideUpStagger}
               className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
             >
-              <Button
-                size="lg"
-                className="rounded-full px-8 h-12 text-base font-medium group w-full sm:w-auto shadow-xl shadow-primary/25"
-                asChild
-              >
-                <a href="/#projects">
-                  View Work
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </a>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="rounded-full px-8 h-12 text-base font-medium w-full sm:w-auto bg-background/40 backdrop-blur-lg border-border/50 hover:bg-accent/50 hover:border-border transition-all"
-                asChild
-              >
-                <a href="https://ieeexplore.ieee.org/document/11154536" target="_blank" rel="noopener noreferrer">
-                  Read Research
-                </a>
-              </Button>
+              {ctaButtons.map((btn: any, idx: number) => {
+                const targetLink = (btn.link === '#contact' || btn.link === '/#contact' || btn.label.toLowerCase().includes('contact'))
+                  ? '/contact'
+                  : btn.link;
+                const isExternal = targetLink.startsWith('http://') || targetLink.startsWith('https://');
+
+                return (
+                  <Button
+                    key={idx}
+                    variant={idx === 0 ? "default" : "outline"}
+                    size="lg"
+                    className={idx === 0 
+                      ? "rounded-full px-8 h-12 text-base font-medium group w-full sm:w-auto shadow-xl shadow-primary/25" 
+                      : "rounded-full px-8 h-12 text-base font-medium w-full sm:w-auto bg-background/40 backdrop-blur-lg border-border/50 hover:bg-accent/50 hover:border-border transition-all"}
+                    asChild
+                  >
+                    {isExternal ? (
+                      <a href={targetLink} target="_blank" rel="noopener noreferrer">
+                        {btn.label}
+                        {idx === 0 && <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
+                      </a>
+                    ) : (
+                      <Link to={targetLink}>
+                        {btn.label}
+                        {idx === 0 && <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
+                      </Link>
+                    )}
+                  </Button>
+                );
+              })}
             </motion.div>
 
-            {/* Social Links */}
             <motion.div variants={slideUpStagger} className="flex items-center gap-4 pt-2">
-              {siteConfig.socials.map((social) => (
+              {socials.map((social: any) => (
                 <a
                   key={social.platform}
                   href={social.href}
@@ -113,7 +127,6 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right Side: Portrait Image */}
           <motion.div
             variants={slideUpStagger}
             className="lg:w-[45%] flex justify-center lg:justify-end order-1 lg:order-2 self-end w-full relative z-0"
@@ -128,7 +141,6 @@ export function HeroSection() {
         </motion.div>
       </MaxWidthWrapper>
 
-      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

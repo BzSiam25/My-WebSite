@@ -19,10 +19,10 @@ export const siteConfig = {
     },
   ],
   navLinks: [
-    { label: 'About', href: '/#about' },
-    { label: 'Experience', href: '/#experience' },
-    { label: 'Projects', href: '/#projects' },
-    { label: 'Photography', href: '/photography' },
-    { label: 'Contact', href: '/#contact' },
+    { label: 'Who I Am', href: '/#who-i-am' },
+    { label: 'Featured Work', href: '/featured-work' },
+    { label: 'Journey', href: '/journey' },
+    { label: 'Research', href: '/research' },
+    { label: 'Contact', href: '/contact' },
   ],
 };

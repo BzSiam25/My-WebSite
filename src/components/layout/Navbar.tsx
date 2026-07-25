@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { siteConfig } from '@/data/config';
+import { siteConfig as fallbackConfig } from '@/data/config';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/hooks/usePortfolio';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { data: settings } = useSettings();
+  
+  const siteName = settings?.site_name ? settings.site_name.split(' ').pop() || 'Siam' : 'Siam';
+  const siteConfig = fallbackConfig;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -28,7 +33,7 @@ export function Navbar() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="font-bold text-lg tracking-tighter font-heading hover:opacity-80 transition-opacity"
         >
-          Siam
+          {siteName}
           <span className="text-primary">.</span>
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
