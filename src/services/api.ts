@@ -2,7 +2,8 @@
 // Core API Client with Authorization & Error Interception
 // ============================================================
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE_URL = RAW_API_URL.replace(/\/+$/, '');
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('auth_token');
@@ -35,7 +36,8 @@ export async function apiRequest<T = any>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${cleanEndpoint}`;
 
   const response = await fetch(url, {
     ...options,
@@ -43,7 +45,6 @@ export async function apiRequest<T = any>(
   });
 
   if (response.status === 401) {
-    // Unauthenticated — remove invalid token
     setAuthToken(null);
   }
 
@@ -53,7 +54,6 @@ export async function apiRequest<T = any>(
     throw new Error(message);
   }
 
-  // Handle empty responses (like 204 No Content)
   if (response.status === 204) {
     return {} as T;
   }
