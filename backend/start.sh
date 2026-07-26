@@ -3,6 +3,10 @@ set -e
 
 echo "Starting Render Production Deployment Setup..."
 
+# Ensure storage & cache directory structure exists with correct permissions
+mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+chmod -R 775 storage bootstrap/cache || true
+
 # Run database migrations in production
 php artisan migrate --force
 
