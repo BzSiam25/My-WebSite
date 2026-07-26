@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: portfolio-backend-api
+    env: php
+    rootDir: backend
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: bash start.sh
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: Md. Bayezid Hasan Siam - Portfolio
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: FILESYSTEM_DISK
+        value: public
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database

@@ -22,27 +22,29 @@ import { seoService } from '@/services/seoService';
 import { settingService } from '@/services/settingService';
 import { apiRequest } from '@/services/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE_URL = RAW_API_URL.replace(/\/+$/, '');
 
 export const getImageUrl = (url?: string) => {
   if (!url) return '';
   
-  let cleanUrl = url;
-  if (cleanUrl.startsWith('http://localhost/') && !cleanUrl.includes('localhost:8000/')) {
-    cleanUrl = cleanUrl.replace('http://localhost/', 'http://localhost:8000/');
-  }
-  if (cleanUrl.startsWith('http://127.0.0.1/') && !cleanUrl.includes('127.0.0.1:8000/')) {
-    cleanUrl = cleanUrl.replace('http://127.0.0.1/', 'http://127.0.0.1:8000/');
-  }
+  const cleanUrl = url.trim();
 
+  // Handle absolute HTTP / HTTPS URLs
   if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+    // In production, if DB contains localhost or 127.0.0.1 URLs, remap to Render host
+    if (import.meta.env.PROD && (cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1'))) {
+      const pathPart = cleanUrl.replace(/^https?:\/\/[^\/]+/, '');
+      const baseOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+      return `${baseOrigin}${pathPart}`;
+    }
     return cleanUrl;
   }
-  if (cleanUrl.startsWith('/storage') || cleanUrl.startsWith('/uploads')) {
-    const base = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
-    return `${base}${cleanUrl}`;
-  }
-  return cleanUrl;
+
+  // Handle relative storage/upload paths
+  const pathPart = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
+  const baseOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+  return `${baseOrigin}${pathPart}`;
 };
 
 export function useHero() {

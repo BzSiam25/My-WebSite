@@ -78,7 +78,7 @@ export const BackupsCMS: React.FC = () => {
             asChild
             className="h-7 w-7 p-0"
           >
-            <a href={`http://127.0.0.1:8000/api/admin/backups/${item.id}/download`} target="_blank" rel="noreferrer">
+            <a href={backupService.getDownloadUrl(item.id)} target="_blank" rel="noreferrer">
               <Download className="w-3.5 h-3.5" />
             </a>
           </Button>
